@@ -1,7 +1,7 @@
 __author__ = "rgr"
 
 # data
-TRAINING_DATA_FILE = 'census.csv'
+TRAINING_DATA_FILE = 'data/census.csv'
 PIPELINE_NAME = 'finding_donors_pipeline'
 
 TARGET = 'income'

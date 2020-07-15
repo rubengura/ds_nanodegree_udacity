@@ -3,7 +3,6 @@ import pandas as pd
 
 from __future__ import annotations
 from sklearn.base import BaseEstimator, TransformerMixin
-import typing as t
 
 
 # frequent label categorical encoder
@@ -18,7 +17,7 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
         else:
             self.variables = variables
 
-    def fit(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+    def fit(self, X: pd.DataFrame, y=None) -> RareLabelCategoricalEncoder:
 
         # persist frequent labels in dictionary
         self.encoder_dict_ = {}
@@ -39,53 +38,55 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
 
         return X
 
-    # string to numbers categorical encoder
-    class CategoricalEncoder(BaseEstimator, TransformerMixin):
 
-        def __init__(self, variables=None):
-            if not isinstance(variables, list):
-                self.variables = [variables]
-            else:
-                self.variables = variables
+# string to numbers categorical encoder
+class CategoricalEncoder(BaseEstimator, TransformerMixin):
 
-        def fit(self, X: pd.DataFrame, y: pd.DataFrame) -> CategoricalEncoder:
-            temp = pd.concat([X, y], axis=1)
-            temp.columns = list(X.columns) + ['target']
+    def __init__(self, variables=None):
+        if not isinstance(variables, list):
+            self.variables = [variables]
+        else:
+            self.variables = variables
 
-            # persist transforming dictionary
-            self.encoder_dict_ = {}
+    def fit(self, X: pd.DataFrame, y: pd.DataFrame) -> CategoricalEncoder:
+        temp = pd.concat([X, y], axis=1)
+        temp.columns = list(X.columns) + ['target']
 
-            for var in self.variables:
-                t = temp.groupby([var])['target'].mean().sort_values(ascending=True).index
-                self.encoder_dict_[var] = {k: i for i, k in enumerate(t, 0)}
+        # persist transforming dictionary
+        self.encoder_dict_ = {}
 
-            return self
+        for var in self.variables:
+            t = temp.groupby([var])['target'].mean().sort_values(ascending=True).index
+            self.encoder_dict_[var] = {k: i for i, k in enumerate(t, 0)}
 
-        def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-            # encode labels
-            X = X.copy()
-            for feature in self.variables:
-                X[feature] = X[feature].map(self.encoder_dict_[feature])
+        return self
 
-            return X
+    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        # encode labels
+        X = X.copy()
+        for feature in self.variables:
+            X[feature] = X[feature].map(self.encoder_dict_[feature])
 
-    # logarithm transformer
-    class LogTransformer(BaseEstimator, TransformerMixin):
+        return X
 
-        def __init__(self, variables=None):
-            if not isinstance(variables, list):
-                self.variables = [variables]
-            else:
-                self.variables = variables
 
-        def fit(self, X: pd.DataFrame, y=None) -> LogTransformer:
-            # to accomodate the pipeline
-            return self
+# logarithm transformer
+class LogTransformer(BaseEstimator, TransformerMixin):
 
-        def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-            X = X.copy()
+    def __init__(self, variables=None):
+        if not isinstance(variables, list):
+            self.variables = [variables]
+        else:
+            self.variables = variables
 
-            for feature in self.variables:
-                X[feature] = np.log(X[feature])
+    def fit(self, X: pd.DataFrame, y=None) -> LogTransformer:
+        # to accomodate the pipeline
+        return self
 
-            return X
+    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
+        for feature in self.variables:
+            X[feature] = np.log(X[feature])
+
+        return X
