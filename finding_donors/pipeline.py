@@ -11,9 +11,15 @@ import finding_donors.preprocessors as pp
 income_pipe = Pipeline(
     [
         ('rare_label_encoder',
-         pp.RareLabelCategoricalEncoder(variables=config.CATEGORITCAL_VARS)),
+         pp.RareLabelCategoricalEncoder(tol=0.05, variables=config.CATEGORITCAL_VARS)),
+
+        ('categorical_encoder',
+         pp.CategoricalEncoder(variables=config.CATEGORITCAL_VARS)),
 
         ('log_transformer',
-         pp.LogTransformer(variables=config.NUMERICAL_LOG_VARS))
+         pp.LogTransformer(variables=config.NUMERICAL_LOG_VARS)),
+
+        ('scaler', MinMaxScaler()),
+        ('gbm_classifier', GradientBoostingClassifier(random_state=42))
     ]
 )
