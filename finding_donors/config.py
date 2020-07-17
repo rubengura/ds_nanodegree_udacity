@@ -7,12 +7,12 @@ PIPELINE_NAME = 'finding_donors_pipeline'
 TARGET = 'income'
 
 # input variables
-FEATURES = ['age', 'workclass', 'education_level', 'education_num', 'marital_status', 'occupation', 'relationship',
-            'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country']
+FEATURES = ['age', 'workclass', 'education_level', 'education-num', 'marital-status', 'occupation', 'relationship',
+            'race', 'sex', 'capital-gain', 'capital-loss', 'hours-per-week', 'native-country']
 
 # variables to log transform
-NUMERICAL_LOG_VARS = ['capital_gain', 'capital_loss']
+NUMERICAL_LOG_VARS = ['capital-gain', 'capital-loss']
 
 # categorical variables to encode
-CATEGORITCAL_VARS = ['workclass', 'education_level', 'marital_status', 'occupation', 'relationship', 'race', 'sex',
-                     'native_country']
+CATEGORITCAL_VARS = ['workclass', 'education_level', 'marital-status', 'occupation', 'relationship', 'race', 'sex',
+                     'native-country']
