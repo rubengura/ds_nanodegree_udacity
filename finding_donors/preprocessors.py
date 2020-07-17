@@ -1,7 +1,6 @@
+from __future__ import annotations
 import numpy as np
 import pandas as pd
-
-from __future__ import annotations
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
@@ -56,7 +55,7 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
         self.encoder_dict_ = {}
 
         for var in self.variables:
-            t = temp.groupby([var])['target'].mean().sort_values(ascending=True).index
+            t = temp[var].sort_values(ascending=True).unique()
             self.encoder_dict_[var] = {k: i for i, k in enumerate(t, 0)}
 
         return self
@@ -87,6 +86,6 @@ class LogTransformer(BaseEstimator, TransformerMixin):
         X = X.copy()
 
         for feature in self.variables:
-            X[feature] = np.log(X[feature])
+            X[feature] = np.log(X[feature] + 1)
 
         return X
